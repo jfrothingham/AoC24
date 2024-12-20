@@ -37,21 +37,34 @@ print, FORMAT='(F)', distances
 
 ; store the running similarity score sum
 similarity = 0
+start = 0
 j = 0
 
 ; it will be most efficient to work with the sorted lists
 for i=0, (n_elements(sorted1)-1) do begin
+	; 
 	active_element = sorted1[i]
-	if (i+j) GT (n_elements(sorted2)-1) then break
-	print, 'active element', active_element, 'compared to', sorted2[i+j]
-	while (sorted2[i+j] eq active_element) do begin
-		similarity = similarity + active_element
-		if (i+j) LT (n_elements(sorted2)-1) then begin 
-			j = j + 1
-		endif else begin
-			break
-		endelse
-	endwhile	
+	if (i+start) GT (n_elements(sorted2)-1) then break
+	
+	print, 'active element', active_element, 'compared to', sorted2[i+start]
+	
+	while (sorted2[i+start] LT active_element) do begin
+		start = start+1
+		j=start
+	endwhile
+
+
+	if (sorted2[i+start] eq active_element) then begin
+		start = j
+		while sorted2[i+j] eq active_element do begin
+			similarity = similarity + active_element
+			if (i+j) LT (n_elements(sorted2)-1) then begin
+				j = j + 1
+			endif else begin
+				break
+			endelse
+		endwhile
+	endif
 endfor
 
 print, format='(f)', similarity
