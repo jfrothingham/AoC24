@@ -59,7 +59,7 @@ for i=0, (n_elements(sorted1)-1) do begin
 	;print, similarity
 endfor
 
-print,similarity
+print, similarity ; incorrect answer: 2.66742e+07
 
 
 return
