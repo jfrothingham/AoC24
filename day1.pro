@@ -8,8 +8,8 @@ pro day1, infile
 readcol, infile, col1, col2, /silent, /nan
 
 ; confirm that both columns were stored
-print, n_elements(col1)
-print, n_elements(col2)
+print, n_elements(col1)	; 1000 elements
+print, n_elements(col2)	; 1000 elements
 
 ; sort the columns
 sorted1 = col1[sort(col1)]
@@ -31,43 +31,35 @@ for i=0, (n_elements(col1)-1) do begin
 
 endfor
 
-print, FORMAT='(F)', distances
+print, FORMAT='(F)', distances	; answer: 1830467
 
 ; CHALLENGE PART 2
 
 ; store the running similarity score sum
 similarity = 0
-start = 0
-j = 0
 
 ; it will be most efficient to work with the sorted lists
+uniq1 = uniq(sorted1)
+uniq2 = uniq(sorted2)
+
+print, n_elements(uniq1) ; 1000 elements
+print, n_elements(uniq2) ; 576 elements
+
+; okay, so every single element in list 1 is unique
+
+; for every element in list 1...
 for i=0, (n_elements(sorted1)-1) do begin
-	; 
 	active_element = sorted1[i]
-	if (i+start) GT (n_elements(sorted2)-1) then break
+	;print, 'checking active element', active_element
 	
-	print, 'active element', active_element, 'compared to', sorted2[i+start]
-	
-	while (sorted2[i+start] LT active_element) do begin
-		start = start+1
-		j=start
-	endwhile
-
-
-	if (sorted2[i+start] eq active_element) then begin
-		start = j
-		while sorted2[i+j] eq active_element do begin
-			similarity = similarity + active_element
-			if (i+j) LT (n_elements(sorted2)-1) then begin
-				j = j + 1
-			endif else begin
-				break
-			endelse
-		endwhile
-	endif
+	; count how many times it is present in list 2 and add accordingly
+	inlist1 = where(sorted2 eq active_element, count)
+	;print, (active_element * count)
+	similarity = similarity + (active_element * count)
+	;print, similarity
 endfor
 
-print, format='(f)', similarity
+print,similarity
 
 
 return
